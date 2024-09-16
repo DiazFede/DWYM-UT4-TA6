@@ -5,24 +5,47 @@ function App() {
   // Estado para almacenar la lista de tareas y la tarea actual
   const [tasks, setTasks] = useState([]);
   const [currentTask, setCurrentTask] = useState('');
+  const [editingIndex, setEditingIndex] = useState(null);
 
   // Función para manejar el cambio en el input
   const handleInputChange = (event) => {
     setCurrentTask(event.target.value);
   };
 
-  // Función para manejar la adición de una nueva tarea
-  const handleAddTask = () => {
+  // Función para manejar la adición o edición de una tarea
+  const handleAddOrEditTask = () => {
     if (currentTask.trim()) {
-      setTasks([...tasks, currentTask]);
-      setCurrentTask(''); // Limpiar el input después de agregar la tarea
+      if (editingIndex !== null) {
+        // Editar tarea existente
+        const updatedTasks = tasks.map((task, index) =>
+          index === editingIndex ? currentTask : task
+        );
+        setTasks(updatedTasks);
+        setEditingIndex(null); // Limpiar el índice de edición
+      } else {
+        // Agregar nueva tarea
+        setTasks([...tasks, currentTask]);
+      }
+      setCurrentTask(''); // Limpiar el input después de agregar o editar la tarea
     }
   };
 
   // Función para manejar el envío del formulario (evitar el recargado de la página)
   const handleSubmit = (event) => {
     event.preventDefault();
-    handleAddTask();
+    handleAddOrEditTask();
+  };
+
+  // Función para manejar la edición de una tarea
+  const handleEditTask = (index) => {
+    setCurrentTask(tasks[index]);
+    setEditingIndex(index);
+  };
+
+  // Función para manejar la eliminación de una tarea
+  const handleDeleteTask = (index) => {
+    const updatedTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
+    setTasks(updatedTasks);
   };
 
   return (
@@ -33,13 +56,17 @@ function App() {
           type="text"
           value={currentTask}
           onChange={handleInputChange}
-          placeholder="Agregar nueva tarea"
+          placeholder={editingIndex !== null ? "Editar tarea" : "Agregar nueva tarea"}
         />
-        <button type="submit">Agregar</button>
+        <button type="submit">{editingIndex !== null ? 'Actualizar' : 'Agregar'}</button>
       </form>
       <ul>
         {tasks.map((task, index) => (
-          <li key={index}>{task}</li>
+          <li key={index}>
+            {task}
+            <button onClick={() => handleEditTask(index)}>Editar</button>
+            <button onClick={() => handleDeleteTask(index)}>Eliminar</button>
+          </li>
         ))}
       </ul>
     </div>
