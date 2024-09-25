@@ -12,7 +12,6 @@ function App() {
     setCurrentTask(event.target.value);
   };
 
-  // Función para manejar la adición o edición de una tarea
   const handleAddOrEditTask = () => {
     if (currentTask.trim()) {
       if (editingIndex !== null) {
@@ -30,19 +29,19 @@ function App() {
     }
   };
 
-  // Función para manejar el envío del formulario (evitar el recargado de la página)
+  // envío del formulario (evitar el recargado de la página)
   const handleSubmit = (event) => {
     event.preventDefault();
     handleAddOrEditTask();
   };
 
-  // Función para manejar la edición de una tarea
+  // edición de una tarea
   const handleEditTask = (index) => {
     setCurrentTask(tasks[index]);
     setEditingIndex(index);
   };
 
-  // Función para manejar la eliminación de una tarea
+  // eliminación de una tarea
   const handleDeleteTask = (index) => {
     const updatedTasks = tasks.filter((_, taskIndex) => taskIndex !== index);
     setTasks(updatedTasks);
